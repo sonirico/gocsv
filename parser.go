@@ -53,7 +53,11 @@ func (p Parser[T]) Parse(data []byte, item *T) (err error) {
 	return nil
 }
 
-func New[T any](sep byte, cols ...ColFactory[T]) Parser[T] {
+func NewParser[T any](sep byte, cols ...ColFactory[T]) Parser[T] {
+	return newParser(sep, cols...)
+}
+
+func newParser[T any](sep byte, cols ...ColFactory[T]) Parser[T] {
 	columns := make([]Col[T], len(cols))
 	opt := opts{sep: sep}
 

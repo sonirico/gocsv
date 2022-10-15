@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func TestParser_RawColumn(t *testing.T) {
+func TestParser_Parse(t *testing.T) {
 	type (
 		args struct {
 			payload []byte
@@ -111,7 +111,7 @@ func TestParser_RawColumn(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 
-			parser := New[duck](
+			parser := NewParser[duck](
 				test.args.sep,
 				StringCol[duck](QuoteNone, nil, duckNameSetter),
 				IntCol[duck](QuoteNone, nil, duckSiblingsSetter),
