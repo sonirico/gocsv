@@ -6,28 +6,32 @@ import (
 )
 
 type (
-	SliceDecoder[T any] struct {
+	FuncDecoder[T any] struct {
 		stream stream[T]
 	}
+
+	Func[T any] func(context.Context, T) error
 )
 
-func (d SliceDecoder[T]) Decode(ctx context.Context) (res []T, err error) {
+func (d FuncDecoder[T]) Decode(ctx context.Context, fn Func[T]) (err error) {
 	for d.stream.Next(ctx) {
 		if err = d.stream.Err(); err != nil {
 			return
 		}
 
-		res = append(res, d.stream.Data())
+		if err = fn(ctx, d.stream.Data()); err != nil {
+			return
+		}
 	}
 	return
 }
 
-func NewSliceDecoder[T any](
+func NewFuncDecoder[T any](
 	r io.Reader,
 	opts DecoderOpts,
 	colDefs ...ColFactory[T],
-) SliceDecoder[T] {
-	return SliceDecoder[T]{
+) FuncDecoder[T] {
+	return FuncDecoder[T]{
 		stream: newCSVStream[T](r, opts.ignoreLines, newParser[T](opts.separator, colDefs...)),
 	}
 }

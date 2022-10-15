@@ -17,7 +17,7 @@ func TestSliceDecoder_Decode(t *testing.T) {
 
 		args struct {
 			data string
-			opts DecodeOpts
+			opts DecoderOpts
 			cols []ColFactory[duck]
 		}
 
@@ -38,10 +38,9 @@ func TestSliceDecoder_Decode(t *testing.T) {
 			name: "no headers, several rows",
 			args: args{
 				data: "1,sonirico\n2,f3r",
-				opts: DecodeOpts{
-					ignoreLines: 0,
-					separator:   SeparatorComma,
-				},
+				opts: NewDecoderOpts(
+					WithDecoderSeparator(SeparatorComma),
+				),
 				cols: []ColFactory[duck]{
 					IntCol[duck](
 						QuoteNone,
@@ -77,10 +76,10 @@ func TestSliceDecoder_Decode(t *testing.T) {
 			name: "headers, several rows",
 			args: args{
 				data: "wings,name\n1,sonirico\n2,f3r",
-				opts: DecodeOpts{
-					ignoreHeaders: true,
-					separator:     SeparatorComma,
-				},
+				opts: NewDecoderOpts(
+					WithDecoderSeparator(SeparatorComma),
+					WithDecoderIgnoreHeaders(),
+				),
 				cols: []ColFactory[duck]{
 					IntCol[duck](
 						QuoteNone,
